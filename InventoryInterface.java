@@ -1,15 +1,28 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
-public class InventoryInterface implements ItemListener {
-
-	static JPanel cards;
+import java.io.IOException;
+public class InventoryInterface implements ItemListener{
 	
+	Inventory inventory = new Inventory();
+	JPanel cards;
+	JButton add = new JButton("ADD");
+	JButton remove = new JButton("REMOVE");
+	JButton edit = new JButton("EDIT");
+	JButton find = new JButton("FIND");
+	JButton findMax = new JButton("FINDMAX");
+	JButton display = new JButton("DISPLAY");
+	
+	JTextField five1 = new JTextField(5);
+	JTextField five2 = new JTextField(5);
+	JTextField ten1 = new JTextField(10);
+	JTextField ten2 = new JTextField(10);
+	JTextField count1 = new JTextField(5);
+	JTextField count2 = new JTextField(5);
 	public InventoryInterface() {
 		
 		JFrame frame = new JFrame("Inventory");
 		
-		//final JPanel cards;
 		final String ADD = "Add Item";
 		final String REMOVE = "Remove Item";
 		final String EDIT = "Edit Item";
@@ -19,33 +32,33 @@ public class InventoryInterface implements ItemListener {
 		
 		JPanel card1 = new JPanel();
 		card1.add(new JLabel("ID: "));
-		card1.add(new JTextField(5));
-		card1.add(new JLabel("Cost: "));
-		card1.add(new JTextField(5));
-		card1.add(new JButton("ADD"));
+		card1.add(five1);
+		card1.add(new JLabel("Count: "));
+		card1.add(count1);
+		card1.add(add);
 		
 		JPanel card2 = new JPanel();
 		card2.add(new JLabel("ID: "));
-		card2.add(new JTextField(10));
-		card2.add(new JButton("REMOVE"));
+		card2.add(ten1);
+		card2.add(remove);
 		
 		JPanel card3 = new JPanel();
 		card3.add(new JLabel("ID: "));
-		card3.add(new JTextField(5));
-		card3.add(new JLabel("Cost: "));
-		card3.add(new JTextField(5));
-		card3.add(new JButton("EDIT"));
+		card3.add(five2);
+		card3.add(new JLabel("Count: "));
+		card3.add(count2);
+		card3.add(edit);
 		
 		JPanel card4 = new JPanel();
 		card4.add(new JLabel("ID: "));
-		card4.add(new JTextField(10));
-		card4.add(new JButton("FIND"));
+		card4.add(ten2);
+		card4.add(find);
 		
 		JPanel card5 = new JPanel();
-		card5.add(new JButton("FIND MAX"));
+		card5.add(findMax);
 		
 		JPanel card6 = new JPanel();
-		card6.add(new JButton("DISPLAY"));
+		card6.add(display);
 		
 		cards = new JPanel(new CardLayout());
 		cards.add(card1, ADD);
@@ -61,13 +74,20 @@ public class InventoryInterface implements ItemListener {
 		
 		cb.setEditable(false);
 		cb.addItemListener(this);
+		add.addActionListener(new MyActionListener());
+		remove.addActionListener(new MyActionListener());
+		edit.addActionListener(new MyActionListener());
+		find.addActionListener(new MyActionListener());
+		findMax.addActionListener(new MyActionListener());
+		display.addActionListener(new MyActionListener());
+		
 		comboBoxPane.add(cb);
 		
 		frame.add(comboBoxPane, BorderLayout.PAGE_START);
 		frame.add(cards, BorderLayout.CENTER);
 		
 		frame.setVisible(true);
-		frame.setSize(400, 100);
+		frame.setSize(400, 150);
 	
 	}
 	
@@ -78,4 +98,59 @@ public class InventoryInterface implements ItemListener {
 		CardLayout cl = (CardLayout)(cards.getLayout());
 	    cl.show(cards, (String)e.getItem());
 	}
+	
+	private class MyActionListener implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+			if(e.getSource() == add){
+				int newID = Integer.parseInt(five1.getText());
+				int newCount = Integer.parseInt(count1.getText());
+				inventory.addNew(newID, newCount);
+				try {
+					inventory.update();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			else if(e.getSource() == remove){
+				int id = Integer.parseInt(ten1.getText());
+				inventory.removeItem(id);
+				try {
+					inventory.update();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			else if(e.getSource() == edit){
+				int newID = Integer.parseInt(five2.getText());
+				int newCount = Integer.parseInt(count2.getText());
+				inventory.edit(newID, newCount);	
+				try {
+					inventory.update();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			else if(e.getSource() == find){
+				int id = Integer.parseInt(ten2.getText());
+				//display stuff
+			}
+			else if(e.getSource() == findMax){
+				inventory.printMax();
+				//display stuff
+			}
+			else if(e.getSource() == display){
+				try {
+					inventory.display();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			
+		}
+	}
+	
 }
